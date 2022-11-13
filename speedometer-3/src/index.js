@@ -341,7 +341,7 @@ ipcRenderer.on('on-serial-close', () => {
 });
 
 ipcRenderer.on('on-serial-data', (_event, data) => {
-    
+    onIncommingData(data);
 });
 
 function onIncommingData(data) {
