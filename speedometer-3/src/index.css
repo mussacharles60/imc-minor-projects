@@ -80,8 +80,26 @@ body {
     position: fixed;
     top: 10px;
     left: 10px;
-    z-index: 99;
+    z-index: 998;
     cursor: pointer;
+}
+
+.bg-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    object-position: center;
+    -webkit-user-drag: none;
+    user-select: none;
 }
 
 /* #leopard-video {
@@ -103,10 +121,9 @@ body {
     height: auto;
     min-height: 400px;
     max-height: 90%;
-    ;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
     position: absolute;
@@ -114,7 +131,8 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9;
-    background: rgb(76, 104, 133);
+    /* background: rgb(76, 104, 133); */
+    background: #0E4D00;
     border-radius: 16px;
     padding: 16px;
     overflow-x: hidden;
@@ -247,6 +265,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 100;
 }
 
 #bg-div {
@@ -261,7 +280,8 @@ body {
     position: fixed;
     z-index: 0;
     /* background: #5D5C5D; */
-    background: #fff;
+    /* background: #fff; */
+    background: transparent;
 }
 
 .play-btn {

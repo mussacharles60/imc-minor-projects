@@ -269,10 +269,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var message1 = localStorage.getItem('message1');
     var message2 = localStorage.getItem('message2');
     var message3 = localStorage.getItem('message3');
+    var message4 = localStorage.getItem('message4');
     var speed = localStorage.getItem('speed');
     $('#message-1').val(message1 !== null ? message1 : ''); // set value to input field
     $('#message-2').val(message2 !== null ? message2 : ''); // set value to input field
     $('#message-3').val(message3 !== null ? message3 : ''); // set value to input field
+    $('#message-4').val(message4 !== null ? message4 : ''); // set value to input field
     $('#speed-range').val(speed !== null ? speed : '0'); // set value to input field
     $('#speed-range-title').text('Speed Level: ' + (speed !== null ? speed : '0')); // set value to input field
     // update element 'speed-range-title' with value from 'speed-range' on change
@@ -305,6 +307,7 @@ ipcRenderer.on('on-serial-open', () => {
     var message1 = $('#message-1').val();
     var message2 = $('#message-2').val();
     var message3 = $('#message-3').val();
+    var message4 = $('#message-4').val();
     // get speed from input element of id 'speed' use jquery (range input)
     var speed = $('#speed-range').val();
 
@@ -312,6 +315,7 @@ ipcRenderer.on('on-serial-open', () => {
     localStorage.setItem('message1', message1);
     localStorage.setItem('message2', message2);
     localStorage.setItem('message3', message3);
+    localStorage.setItem('message4', message4);
     localStorage.setItem('speed', speed);
 });
 
@@ -337,6 +341,10 @@ ipcRenderer.on('on-serial-close', () => {
 });
 
 ipcRenderer.on('on-serial-data', (_event, data) => {
+    
+});
+
+function onIncommingData(data) {
     if (!started) {
         return;
     }
@@ -374,7 +382,7 @@ ipcRenderer.on('on-serial-data', (_event, data) => {
         stop();
     } else {
         // if data >= 60 then show message 1
-        if (data >= 60 && data <= 80) {
+        if (data >= 45 && data <= 60) {
             if (stage === 1) return;
             stage = 1;
             var message1 = localStorage.getItem('message1');
@@ -389,7 +397,7 @@ ipcRenderer.on('on-serial-data', (_event, data) => {
                     $('#modal').hide();
                 }, 3000);
             }
-        } else if (data >= 120 && data <= 140) {
+        } else if (data >= 90 && data <= 105) {
             if (stage === 2) return;
             stage = 2;
             var message2 = localStorage.getItem('message2');
@@ -404,7 +412,7 @@ ipcRenderer.on('on-serial-data', (_event, data) => {
                     $('#modal').hide();
                 }, 3000);
             }
-        } else if (data >= 180 && data <= 200) {
+        } else if (data >= 135 && data <= 150) {
             if (stage === 3) return;
             stage = 3;
             var message3 = localStorage.getItem('message3');
@@ -419,9 +427,34 @@ ipcRenderer.on('on-serial-data', (_event, data) => {
                     $('#modal').hide();
                 }, 3000);
             }
+        } else if (data >= 180 && data <= 195) {
+            if (stage === 4) return;
+            stage = 4;
+            var message4 = localStorage.getItem('message4');
+            if (message4 !== null && message4 !== '') {
+                $('#modal-text').text(message4);
+                $('#winner-img').hide();
+                $('#loser-img').hide();
+                $('#modal').show();
+                // beep(500, 500);
+                setTimeout(() => {
+                    if (stage !== 4) return;
+                    $('#modal').hide();
+                }, 3000);
+            }
         }
     }
-});
+}
+
+let dd = 0;
+let simmulationInterval = null;
+
+function simmulate() {
+    simmulationInterval = setInterval(() => {
+        dd++;
+        onIncommingData(dd);
+    }, 100);
+}
 
 function onStartClick() {
     if (started) {
@@ -445,6 +478,7 @@ function onStartClick() {
                     ipcRenderer.send('on-start-device-click', 'do-it');
                     beep(2310, 500);
                     start();
+                    simmulate();
                 }, 1000);
             }, 1000);
         }, 1000);
@@ -513,6 +547,11 @@ function stop() {
             $('#modal').hide();
         }, 3000);
         stage = 0;
+        dd = 0;
+        if (simmulationInterval !== null) {
+            clearInterval(simmulationInterval);
+            simmulationInterval = null;
+        }
     }
     if ((finalReadingRobot < finalReadingUser) && (finalReadingUser == 201 || finalReadingRobot == 201)) {
         $('#modal-text').text('You Win');
@@ -524,6 +563,11 @@ function stop() {
             $('#modal').hide();
         }, 3000);
         stage = 0;
+        dd = 0;
+        if (simmulationInterval !== null) {
+            clearInterval(simmulationInterval);
+            simmulationInterval = null;
+        }
     }
     $('#bg-div').hide();
     // // stop the video
