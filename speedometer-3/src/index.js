@@ -478,7 +478,7 @@ function onStartClick() {
                     ipcRenderer.send('on-start-device-click', 'do-it');
                     beep(2310, 500);
                     start();
-                    simmulate();
+                    // simmulate();
                 }, 1000);
             }, 1000);
         }, 1000);
